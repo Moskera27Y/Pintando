@@ -22,6 +22,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return sendJson(res, { categories, hero });
     }
 
+    // ─── Public: GET sponsorship levels + benefits + section ──────────────
+    if (action === 'sponsorship-public' && req.method === 'GET') {
+      const [levels, benefits, benefitLevels, section] = await Promise.all([
+        prisma.donationSponsorshipLevel.findMany({
+          where: { status: 'active' },
+          orderBy: { displayOrder: 'asc' },
+        }),
+        prisma.donationSponsorshipBenefit.findMany({
+          orderBy: { displayOrder: 'asc' },
+        }),
+        prisma.donationSponsorshipBenefitLevel.findMany(),
+        prisma.donationSponsorshipSection.findFirst(),
+      ]);
+      return sendJson(res, { levels, benefits, benefitLevels, section });
+    }
+
     // ─── All other actions require admin auth ─────────────────────────────
     const auth = requireAuth(req, res);
     if (!auth) return;
@@ -178,22 +194,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       return sendError(res, 405, 'Método no permitido');
-    }
-
-    // ─── Sponsorship: public GET ─────────────────────────────────────────
-    if (action === 'sponsorship-public' && req.method === 'GET') {
-      const [levels, benefits, benefitLevels, section] = await Promise.all([
-        prisma.donationSponsorshipLevel.findMany({
-          where: { status: 'active' },
-          orderBy: { displayOrder: 'asc' },
-        }),
-        prisma.donationSponsorshipBenefit.findMany({
-          orderBy: { displayOrder: 'asc' },
-        }),
-        prisma.donationSponsorshipBenefitLevel.findMany(),
-        prisma.donationSponsorshipSection.findFirst(),
-      ]);
-      return sendJson(res, { levels, benefits, benefitLevels, section });
     }
 
     // ─── Sponsorship Levels CRUD ─────────────────────────────────────────

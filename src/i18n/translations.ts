@@ -4,14 +4,14 @@ export const translations = {
   es: {
     nav: {
       links: [
-        { label: 'El Proyecto', href: '#proyecto' },
-        { label: 'La Ruleta', href: '#ruleta' },
-        { label: 'Donar', href: '#donacion' },
-        { label: 'Guía', href: '/donation-guide' },
-        { label: 'Membresías', href: '#membresias' },
-        { label: 'Impacto', href: '#impacto' },
-        { label: 'Postular', href: '#postulacion' },
+        { label: 'Inicio', href: '#top' },
+        { label: 'Nosotros', href: '#proyecto' },
+        { label: 'Misión', href: '#impacto' },
+        { label: 'Proyectos', href: '#galeria' },
+        { label: 'Guía de Donación', href: '/donation-guide' },
+        { label: 'Participa', href: '#postulacion' },
         { label: 'Contacto', href: '#contacto' },
+        { label: 'Donar', href: '#donacion' },
       ],
       applyFamily: 'Postula una Familia',
       beAlly: 'Sé un Aliado',
@@ -265,14 +265,14 @@ export const translations = {
   en: {
     nav: {
       links: [
-        { label: 'The Project', href: '#proyecto' },
-        { label: 'The Wheel', href: '#ruleta' },
-        { label: 'Donate', href: '#donacion' },
-        { label: 'Guide', href: '/donation-guide' },
-        { label: 'Memberships', href: '#membresias' },
-        { label: 'Impact', href: '#impacto' },
-        { label: 'Apply', href: '#postulacion' },
+        { label: 'Home', href: '#top' },
+        { label: 'About', href: '#proyecto' },
+        { label: 'Mission', href: '#impacto' },
+        { label: 'Projects', href: '#galeria' },
+        { label: 'Donation Guide', href: '/donation-guide' },
+        { label: 'Get Involved', href: '#postulacion' },
         { label: 'Contact', href: '#contacto' },
+        { label: 'Donate', href: '#donacion' },
       ],
       applyFamily: 'Refer a Family',
       beAlly: 'Become an Ally',

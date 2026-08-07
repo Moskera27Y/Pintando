@@ -98,6 +98,12 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
+              onClick={(e) => {
+                if (link.href.startsWith('#')) {
+                  e.preventDefault();
+                  handleNavClick(link.href);
+                }
+              }}
               className={`rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                 solid
                   ? 'text-ink-600 hover:bg-ink-50 hover:text-ink-900'
