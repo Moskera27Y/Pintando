@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/auth.ts": { "memory": 1024, "maxDuration": 30 },
+    "api/settings.ts": { "memory": 1024, "maxDuration": 30 },
+    "api/forms.ts": { "memory": 1024, "maxDuration": 30 },
+    "api/admin.ts": { "memory": 1024, "maxDuration": 30 },
+    "api/stripe.ts": { "memory": 1024, "maxDuration": 30 },
+    "api/donation-guide.ts": { "memory": 1024, "maxDuration": 30 }
+  },
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--no-deprecation"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/auth/login", "destination": "/api/auth?action=login" },
+    { "source": "/api/auth/me", "destination": "/api/auth?action=me" },
+    { "source": "/api/auth/logout", "destination": "/api/auth?action=logout" },
+    { "source": "/api/settings/public", "destination": "/api/settings?action=public" },
+    { "source": "/api/contacts", "destination": "/api/forms?action=contacts" },
+    { "source": "/api/mensajes", "destination": "/api/forms?action=contacts" },
+    { "source": "/api/newsletter/subscribe", "destination": "/api/forms?action=newsletter" },
+    { "source": "/api/newsletter", "destination": "/api/forms?action=newsletter" },
+    { "source": "/api/donaciones", "destination": "/api/forms?action=donaciones" },
+    { "source": "/api/donations", "destination": "/api/forms?action=donations" },
+    { "source": "/api/subscriptions", "destination": "/api/forms?action=subscriptions" },
+    { "source": "/api/users", "destination": "/api/admin?action=users" },
+    { "source": "/api/plans", "destination": "/api/admin?action=plans" },
+    { "source": "/api/news", "destination": "/api/admin?action=news" },
+    { "source": "/api/events", "destination": "/api/admin?action=events" },
+    { "source": "/api/media", "destination": "/api/media" },
+    { "source": "/api/media/public", "destination": "/api/media?action=public" },
+    { "source": "/api/media/upload", "destination": "/api/media?action=upload" },
+    { "source": "/api/media/blob", "destination": "/api/media?action=blob" },
+    { "source": "/api/media/:id", "destination": "/api/media?id=:id" },
+    { "source": "/api/donation-guide", "destination": "/api/donation-guide" },
+    { "source": "/api/stripe/create-checkout-session", "destination": "/api/stripe?action=create-checkout-session" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

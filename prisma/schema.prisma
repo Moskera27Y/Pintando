@@ -1,0 +1,338 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String        @unique
+  passwordHash String
+  avatar       String?
+  phone        String?
+  country      String?
+  city         String?
+  role         Role          @default(USER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  donations    Donation[]
+  eventLogs    EventLog[]
+  news         News[]
+  subscription Subscription?
+
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Donation {
+  id            String         @id @default(cuid())
+  amount        Decimal        @db.Decimal(10, 2)
+  currency      String         @default("USD")
+  status        DonationStatus @default(PENDING)
+  paypalOrderId String?        @unique
+  donorName     String?
+  donorEmail    String?
+  message       String?
+  createdAt     DateTime       @default(now())
+  userId        String?
+  user          User?          @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([userId])
+  @@map("donations")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  paypalSubscriptionId String?            @unique
+  paypalCustomerId     String?
+  status               SubscriptionStatus @default(ACTIVE)
+  nextBillingDate      DateTime?
+  cancelAt             DateTime?
+  cancelledAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  userId               String             @unique
+  planId               String
+  plan                 Plan               @relation(fields: [planId], references: [id])
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([planId])
+  @@map("subscriptions")
+}
+
+model Plan {
+  id              String         @id @default(cuid())
+  name            String
+  description     String?
+  price           Decimal        @db.Decimal(10, 2)
+  currency        String         @default("USD")
+  active          Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  benefits        Json?
+  billingInterval String         @default("monthly")
+  color           String?
+  icon            String?
+  sortOrder       Int            @default(0)
+  stripePriceId   String?
+  tagline         String?
+  subscriptions   Subscription[]
+
+  @@index([active])
+  @@index([sortOrder])
+  @@map("plans")
+}
+
+model Contact {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  status    ContactStatus @default(NEW)
+  createdAt DateTime      @default(now())
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([email])
+  @@map("contacts")
+}
+
+model News {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  image     String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([published])
+  @@index([authorId])
+  @@map("news")
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([active])
+  @@map("newsletter")
+}
+
+model Media {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  blobUrl      String
+  thumbnailUrl String?
+  fileName     String
+  mimeType     String?
+  fileSize     Int?
+  width        Int?
+  height       Int?
+  duration     Int?
+  category     String   @default("miscellaneous")
+  status       String   @default("active")
+  displayOrder Int      @default(0)
+  tags         String[] @default([])
+  featured     Boolean  @default(false)
+  uploadedBy   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([createdAt])
+  @@index([category])
+  @@index([status])
+  @@index([featured])
+  @@index([displayOrder])
+  @@map("media")
+}
+
+model Gallery {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  imageUrl     String
+  thumbnail    String?
+  displayOrder Int      @default(0)
+  featured     Boolean  @default(false)
+  status       String   @default("active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([displayOrder])
+  @@index([status])
+  @@index([featured])
+  @@map("gallery")
+}
+
+model DonationGuideCategory {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  icon         String   @default("Heart")
+  color        String   @default("blue")
+  imageUrl     String?
+  items        Json?
+  sortOrder    Int      @default(0)
+  status       String   @default("active")
+  contactEmail String   @default("donations@pintandosuenos.org")
+  emailSubject String   @default("Donation Inquiry")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([sortOrder])
+  @@index([status])
+  @@map("donation_guide_categories")
+}
+
+model DonationGuideHero {
+  id           String   @id @default(cuid())
+  title        String
+  subtitle     String?
+  imageUrl     String?
+  buttonText   String   @default("Donate Now")
+  buttonHref   String   @default("#donacion")
+  pdfUrl       String?
+  introduction String?
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@map("donation_guide_hero")
+}
+
+model DonationSponsorshipLevel {
+  id            String   @id @default(cuid())
+  nameEn        String
+  nameEs        String
+  descriptionEn String?
+  descriptionEs String?
+  minAmount     Decimal  @db.Decimal(10, 2)
+  maxAmount     Decimal? @db.Decimal(10, 2)
+  buttonTextEn  String   @default("Donate")
+  buttonTextEs  String   @default("Donar")
+  buttonAction  String   @default("both")
+  icon          String   @default("Award")
+  color         String   @default("blue")
+  featured      Boolean  @default(false)
+  status        String   @default("active")
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+  benefitLevels DonationSponsorshipBenefitLevel[]
+
+  @@index([displayOrder])
+  @@index([status])
+  @@map("donation_sponsorship_levels")
+}
+
+model DonationSponsorshipBenefit {
+  id           String   @id @default(cuid())
+  textEn       String
+  textEs       String
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+  benefitLevels DonationSponsorshipBenefitLevel[]
+
+  @@index([displayOrder])
+  @@map("donation_sponsorship_benefits")
+}
+
+model DonationSponsorshipBenefitLevel {
+  id        String  @id @default(cuid())
+  benefitId String
+  levelId   String
+  included  Boolean @default(false)
+  benefit   DonationSponsorshipBenefit @relation(fields: [benefitId], references: [id], onDelete: Cascade)
+  level     DonationSponsorshipLevel   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@unique([benefitId, levelId])
+  @@index([benefitId])
+  @@index([levelId])
+  @@map("donation_sponsorship_benefit_levels")
+}
+
+model DonationSponsorshipSection {
+  id            String   @id @default(cuid())
+  titleEn       String   @default("Become a Community Sponsor")
+  titleEs       String   @default("Niveles de Patrocinio")
+  subtitleEn    String   @default("Join us in transforming homes and changing lives.")
+  subtitleEs    String   @default("Únase a nosotros como socio comunitario y transforme vidas.")
+  descriptionEn String?
+  descriptionEs String?
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@map("donation_sponsorship_section")
+}
+
+model EventLog {
+  id          String   @id @default(cuid())
+  type        String
+  action      String
+  resource    String?
+  description String?
+  ipAddress   String?
+  payload     Json?
+  createdAt   DateTime @default(now())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([type])
+  @@index([userId])
+  @@map("event_logs")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+  SUSPENDED
+}
+
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
