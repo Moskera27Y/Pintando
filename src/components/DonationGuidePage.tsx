@@ -109,8 +109,15 @@ export function DonationGuidePage() {
     }
   };
 
-  const scrollToGuide = () => {
-    guideRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const [pdfUnavailable, setPdfUnavailable] = useState(false);
+
+  const handleMaterialsClick = () => {
+    if (hero?.pdfUrl) {
+      window.open(hero.pdfUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      setPdfUnavailable(true);
+      setTimeout(() => setPdfUnavailable(false), 3500);
+    }
   };
 
   const buildMailto = (cat: Category) => {
@@ -245,12 +252,17 @@ export function DonationGuidePage() {
                 </p>
                 <button
                   type="button"
-                  onClick={scrollToGuide}
+                  onClick={handleMaterialsClick}
                   className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent-600 px-6 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-700"
                 >
-                  {lang === 'es' ? 'Ver guía de donación' : 'View Donation Guide'}
-                  <ArrowRight className="h-4 w-4" />
+                  <Download className="h-4 w-4" />
+                  {lang === 'es' ? 'Descargar Guía PDF' : 'Download Donation Guide'}
                 </button>
+                {pdfUnavailable && (
+                  <p className="mt-3 text-sm font-medium text-dream-red">
+                    {lang === 'es' ? 'La guía de donación no está disponible.' : 'Donation guide not available.'}
+                  </p>
+                )}
               </div>
             </div>
           </Reveal>
@@ -285,19 +297,19 @@ export function DonationGuidePage() {
           <div className="mb-12 text-center">
             <Reveal>
               <span className="text-sm font-bold uppercase tracking-widest text-primary-600">
-                {lang === 'es' ? 'Qué necesitamos' : 'What We Need'}
+                {lang === 'es' ? 'Transparencia' : 'Transparency'}
               </span>
             </Reveal>
             <Reveal delay={1}>
               <h2 className="mt-3 text-3xl font-bold text-ink-900 sm:text-4xl">
-                {lang === 'es' ? 'Guía de donación de materiales' : 'Material Donation Guide'}
+                {lang === 'es' ? 'Así se invierte tu donación' : 'How Your Donation Is Invested'}
               </h2>
             </Reveal>
             <Reveal delay={2}>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-ink-600 leading-relaxed">
                 {lang === 'es'
-                  ? 'Explora cada categoría para ver los materiales y servicios que más necesitamos. Cada tarjeta incluye un botón de contacto directo.'
-                  : 'Explore each category to see the materials and services we need most. Each card includes a direct contact button.'}
+                  ? 'Conoce las diferentes áreas donde invertimos las donaciones para transformar hogares y mejorar la calidad de vida de las familias.'
+                  : 'See the different areas where donations are invested to transform homes and improve families\' quality of life.'}
               </p>
             </Reveal>
           </div>
