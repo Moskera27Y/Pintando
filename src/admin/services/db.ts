@@ -1,11 +1,12 @@
 import type {
   Role,
   DonationStatus,
+  PaymentMethod,
   SubscriptionStatus,
   ContactStatus,
 } from '@/admin/types';
 
-export type { Role, DonationStatus, SubscriptionStatus, ContactStatus };
+export type { Role, DonationStatus, PaymentMethod, SubscriptionStatus, ContactStatus };
 
 // ─── Local types (compatible with Prisma but using number instead of Decimal) ──
 type LocalUser = {
@@ -27,7 +28,10 @@ type LocalDonation = {
   amount: number;
   currency: string;
   status: DonationStatus;
+  paymentMethod: PaymentMethod | null;
   paypalOrderId: string | null;
+  stripePaymentId: string | null;
+  stripeSessionId: string | null;
   donorName: string | null;
   donorEmail: string | null;
   message: string | null;

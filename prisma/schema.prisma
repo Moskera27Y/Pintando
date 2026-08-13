@@ -30,21 +30,25 @@ model User {
 }
 
 model Donation {
-  id            String         @id @default(cuid())
-  amount        Decimal        @db.Decimal(10, 2)
-  currency      String         @default("USD")
-  status        DonationStatus @default(PENDING)
-  paypalOrderId String?        @unique
-  donorName     String?
-  donorEmail    String?
-  message       String?
-  createdAt     DateTime       @default(now())
-  userId        String?
-  user          User?          @relation(fields: [userId], references: [id])
+  id             String          @id @default(cuid())
+  amount         Decimal         @db.Decimal(10, 2)
+  currency       String          @default("USD")
+  status         DonationStatus  @default(PENDING)
+  paymentMethod  PaymentMethod?
+  paypalOrderId  String?         @unique
+  stripePaymentId String?        @unique
+  stripeSessionId String?
+  donorName      String?
+  donorEmail     String?
+  message        String?
+  createdAt      DateTime        @default(now())
+  userId         String?
+  user           User?           @relation(fields: [userId], references: [id])
 
   @@index([createdAt])
   @@index([status])
   @@index([userId])
+  @@index([paymentMethod])
   @@map("donations")
 }
 
@@ -320,6 +324,11 @@ enum DonationStatus {
   FAILED
   REFUNDED
   CANCELLED
+}
+
+enum PaymentMethod {
+  STRIPE
+  PAYPAL
 }
 
 enum SubscriptionStatus {

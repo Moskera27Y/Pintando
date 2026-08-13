@@ -11,6 +11,7 @@ import type {
   EventLog,
   Role,
   DonationStatus,
+  PaymentMethod,
   SubscriptionStatus,
   ContactStatus,
 } from '@prisma/client';
@@ -28,6 +29,7 @@ export type {
   EventLog,
   Role,
   DonationStatus,
+  PaymentMethod,
   SubscriptionStatus,
   ContactStatus,
 };
